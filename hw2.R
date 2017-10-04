@@ -1,3 +1,5 @@
+# hw2
+# problem 1) (b)
 gram_schmidt_lindep = function(matrixq1){
   x=sqrt(matrixq1[,1][1]^2+matrixq1[,1][2]^2+matrixq1[,1][3]^2+matrixq1[,1][4]^2)
   u0=matrixq1[,1]/x
@@ -23,6 +25,7 @@ atilde=hatmat %*% rho2
 ##################
 ##################
 
+# problem 3
 y=matrix(c(82,79,74,83,80,81,84,81),byrow=F,nrow=8)
 x=matrix(c(10,9,9,11,11,10,10,12,15,14,13,15,14,14,16,13),byrow=F,nrow=8,ncol=2)
 
@@ -60,15 +63,29 @@ confinfbeta1plusbeta2 = c(t(lambda2) %*% betahat - qt(1-0.05/2, df = 6) * sqrt(
   t(lambda2) %*% betahat + qt(1-0.05/2, df = 6) * sqrt(
     s2 * t(lambda2) %*% solve(t(x) %*% x) %*% lambda2))
 
+confinfbeta1
+confinfbeta1plusbeta2
+
 # c) Perform an alpha = 0.01 test for H0: B2 = 3
 partclambda = matrix(c(0,1),nrow = 2,ncol = 1)
-tstatc = (t(partclambda) %*% betahat - 3) / (s2 * t(partclambda) 
-                                          %*% solve(t(x) %*% x) %*% partclambda)
+tstatc = (t(partclambda) %*% betahat - 3) / sqrt((s2 * t(partclambda) 
+                                          %*% solve(t(x) %*% x) %*% partclambda))
+tstatc
+# two tailed
+1-(pt(tstatc,6,0)-(1-pt(tstatc,6,0)))
+# one tailed
+1-pt(tstatc,6,0)
 # look up significance to the 0.01 level in my t-chart for n-r = 8-2 = 6 df
+# Not significant to the 0.05 level
 
 # d)
 # Test 
 partdlambda = matrix(c(1,-1), nrow = 2)
-tstatd = (t(partdlambda) %*% betahat) / (s2 * t(partdlambda) 
+tstatd = (t(partdlambda) %*% betahat) / sqrt(s2 * t(partdlambda) 
                                             %*% solve(t(x) %*% x) %*% partdlambda)
+tstatd
 # probability of being more "extreme" than tstatd
+#two tailed
+pt(tstatd,6,0)*2
+#one tailed
+pt(tstatd)
