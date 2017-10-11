@@ -91,6 +91,7 @@ out
 # F tests:
 ybar <- mean(y)
 Fstat <- sum((yhat - ybar)^2)/(3-1) / (sum((y-yhat)^2)/(30-3))
+# ^^ originally Joe had just the letters "MSE" in the denom
 Fstat
 s
 1 - pf(q=Fstat,df1=3-1,df2=30-3)
