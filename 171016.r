@@ -86,30 +86,40 @@ mean(nullpvals < .05)
 # power via noncentral F distribution formulas -----
 #+++++++++++++++++++++++++++++++++++++++++++++++++++
 
-n2 <- function(x)sum(x^2)
+n2 <- function(x)sum(x^2) # function to 
 # --- a ---
-n <- 10
-mu <- rep(c(150,149,148,153),each=n) # units are 1000 psi
-sig <- 3
+# including personal recaps
+# units are 1000 psi
 
-mu0 <- mean(mu)*rep(1,4*n)
-ncp <- n2(mu-mu0)/sig^2
-crit <- qf(.95, 4-1, 4*n-4)
-pow <- 1 - pf(crit, 4-1, 4*n-4, ncp)
+n <- 10 # number of each 
+mu <- rep(c(150,149,148,153),each=n) # observed means thru testing
+sig <- 3 # SD is 3000
+
+mu0 <- mean(mu)*rep(1,4*n) # null? all mu's 150 (here, the "mean of the means")
+ncp <- n2(mu-mu0)/sig^2 # squared difference between [alt?] and [null?], div by SD
+# SD assumed same for both?
+
+crit <- qf(.95, 4-1, 4*n-4) # crit[ical value]
+# value that, for our dsn with 3 numdf and 36 dendf, is more extreme than 95% of the data
+# (95th percentile)
+
+pow <- 1 - pf(crit, 4-1, 4*n-4, ncp) #~10.5% chance of being 95th percentile or greater.
+# 1 - 10.5% means ~89.5% of being lower than 95th percentile.
+# this is our power
 pow
 #^^ compare with pow1 above.
 pow1
 
-# E.g. suppose you are planning an experiment and want to look at how power increases with sample size
 
-mypow <- function(n){
+# E.g. suppose you are planning an experiment and want to look at how power increases with sample size
+mypow <- function(n){ #(varying on n: number of obs to be taken FOR EACH manufacturer)
   mu <- rep(c(150,149,148,153),each=n) # units are 1000 psi
   mu0 <- mean(mu)*rep(1,4*n)
   sig <- 3
   ncp <- n2(mu-mu0)/sig^2
   crit <- qf(.95, 4-1, 4*n-4)
   pow <- 1 - pf(crit, 4-1, 4*n-4, ncp)
-  pow
+  return(pow)
 }
 
 mypow(10)
@@ -117,15 +127,18 @@ ns <- 5:15
 pows <- ns
 for(i in 1:length(ns))pows[i] <- mypow(ns[i])
 plot(ns, pows, type='b')
-abline(h=.8, lty=2)
+abline(h=.8, lty=2) #shows the point at which power exceeds 0.8 (80%)
 
 #++++++++++++++++++++++++++++++++++++++++++
 # Stapleton's second question -------------
 #++++++++++++++++++++++++++++++++++++++++++
 
-# Suppose we want to design a study that will have power at least 0.90 for alpha=0.05 in the case that any two of the four means differ by 8000 or more. How many observations should be taken on each alloy?
+# Suppose we want to design a study that will have power at least 0.90 for alpha=0.05
+# in the case that any two of the four means differ by 8000 or more.
+# How many observations should be taken on each alloy?
 
 # Trial and error; start with 10 observations per alloy.
+# evidently, we were able to go down to 6 and stay above 95% power.
 
 # --- b ---
 n <- 6
@@ -145,12 +158,13 @@ bodyfat <- read.table(url, header=T, sep="\t")[,-1]
 bodyfat0 <- bodyfat
 set.seed(12345)
 n <- 30
-bodyfat <- bodyfat0[sample(1:nrow(bodyfat0),n),]
+bodyfat <- bodyfat0[sample(1:nrow(bodyfat0),n),] #takes random 30 rows from the total possible rows (250)
+# (as random as it can be, with that seed set)
 attach(bodyfat)
 bf <- Pct.BF
 ht <- Height
 ab <- Abdomen
-ab <- ab/2.54
+ab <- ab/2.54 #why divide by 2.54?
 
 lmha <- lm(bf ~ ht + ab)
 summary(lmha)
@@ -192,12 +206,13 @@ lm(bf ~ htr)
 lmha
 #^^ same coef of ht!
 # How about the residuals for the two regressions?
-plot(lmha$residuals, lm(bf ~ htr)$resid)
+plot(lmha$residuals, lm(bf ~ ht)$resid) # bad : residuals tend upward
+plot(lmha$residuals, lm(bf ~ htr)$resid) # still tending somewhat upward...
 
 # Try residualizing both bf and ht: added variable plot
 bfr <- lm(bf~ab)$resid
 htr <- lm(ht~ab)$resid
-plot(htr,bfr)
+plot(htr,bfr) # little pattern to the residuals (residualized bf, ht on ab)
 
 # compare coefficients:
 lm(bfr~htr)
