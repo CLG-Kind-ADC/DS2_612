@@ -20,7 +20,7 @@ sig <- 3
 y <- rnorm(4*n, mean=mu, sd=sig)
 
 batch <- rep(letters[1:4], each=n)
-plot(y ~ batch)  # error
+#plot(y ~ batch)  # error
 
 batch <- as.factor(rep(letters[1:4], each=n))
 plot(y ~ batch)
@@ -67,7 +67,7 @@ mean(pvals < .05)  # <-- power
 pow1 <- mean(pvals < .05)  # for later comparison
 
 # A very good sanity check to do: make sure P values are uniform under null:
-pvals <- numeric(nrep)
+nullpvals <- numeric(nrep)
 for(it in 1:nrep){
   mu <- rep(c(150,150,150,150),each=n) # units are 1000 psi
   y <- rnorm(4*n, mean=mu, sd=sig)
@@ -75,12 +75,12 @@ for(it in 1:nrep){
   lm1 <- lm(y~batch)
   s <- summary(lm1)
   sf <- s$fstat
-  pvals[it] <- 1 - pf(sf[1], sf[2], sf[3])
+  nullpvals[it] <- 1 - pf(sf[1], sf[2], sf[3])
 }
 
-truepvals
-truehist(pvals)
-mean(pvals < .05)
+#truepvals
+truehist(nullpvals)
+mean(nullpvals < .05)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++
 # power via noncentral F distribution formulas -----
