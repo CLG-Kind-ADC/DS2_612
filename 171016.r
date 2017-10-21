@@ -224,9 +224,10 @@ abline(0,1)
 
 summary(lm(bfr~htr))
 
+# not sure what is going on here - bleed into next week's lecture?
+# comparisons to a bunch of plots we've seen before
 lm(bfr~htr)
 lm(bf~htr)
 plot(bfr~htr)
 plot(bf~htr)
 plot(lm(bfr~htr)$resid, lm(bf~htr)$resid)
-
